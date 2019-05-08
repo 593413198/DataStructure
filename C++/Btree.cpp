@@ -1,10 +1,14 @@
 /* *********************
  * @file:   Btree.cpp
- * @brief:  二叉树的定义和操作
+ * @brief:  已完成函数如下：
+ *			二叉树的插入，删除，搜索，
+ *			二叉树的层次遍历
+ *			二叉树的最大深度，最小深度
+ *			二叉树的后继节点
  * @date:   2019/5/7
  * @author: luhao
  * *********************/
-
+#include <algorithm>
 #include <iostream>
 #include <stack>
 #include <queue>
@@ -39,8 +43,37 @@ public:
 	void insert(T x); //插入元素x
 	pNode successor(pNode x); //返回x的后继节点			
 	void Delete(T x);   //删除元素x
+	int maxDepth(); //返回最大深度
+	int minDepth(); //返回最小深度
 	void levelorder(); //层次遍历
 	*/
+	
+	int maxDepth(){
+		return MaxDepth(_root);
+	}
+
+	int MaxDepth(pNode z)
+	{	/* 返回二叉树最大深度
+		   递归实现，分别求左子树和右子树的深度，最后加1 */
+		if (z==NULL)
+			return 0;
+		return max(MaxDepth(z->_l)+1,MaxDepth(z->_r)+1);
+	}
+	
+	int minDepth(){
+		return MinDepth(_root);
+	}
+
+	int MinDepth(pNode z)
+	{	/* 返回二叉树最小深度
+		   注意当_root只有一个孩子时，并不能返回最小深度1，因为它不是叶子节点 */
+		if (!z)
+			return 0;
+		if (z->_l && z->_r)
+			return min(MinDepth(z->_l)+1,MinDepth(z->_r)+1);
+		else 
+			return MinDepth(z->_l) + MinDepth(z->_r) + 1;
+	}
 
 	pNode Search(pNode z, T x)
 	{
@@ -49,7 +82,7 @@ public:
 		if (z == NULL)
 			return NULL; //没找到
 		if (x < z->_key)
-			return Search(z->_l,x);
+ 			return Search(z->_l,x);
 		else
 			return Search(z->_r,x);
 	}
@@ -186,9 +219,9 @@ int main(){
 	B.insert(9);
 	B.insert(17);
 	B.insert(20);
+	B.insert(4);
 	B.levelorder();
-	B.Delete(6);
-	B.levelorder();
+	cout << B.minDepth() << endl;
 	return 1;
 
 }
