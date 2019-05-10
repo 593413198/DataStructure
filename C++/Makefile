@@ -1,4 +1,4 @@
 all:
 	reset
-	g++ Btree.cpp -o test
+	g++ binarytree.cpp -o test
 	./test

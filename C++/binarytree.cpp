@@ -1,8 +1,8 @@
 /* *********************
- * @file:   Btree.cpp
+ * @file:   binarytree.cpp
  * @brief:  已完成函数如下：
- *			二叉树的插入，删除，搜索，
- *			二叉树的层次遍历
+ *			二叉树的插入，删除，搜索，最大最小节点
+ *			二叉树的层次遍历,前中后序遍历
  *			二叉树的最大深度，最小深度
  *			二叉树的后继节点
  * @date:   2019/5/7
@@ -39,6 +39,8 @@ public:
 	Btree() {_root=NULL;}; //初始化二叉树
 	/*
 	~Btree(); //折构函数
+	pNode maximum(); //返回最大节点的指针
+	pNode minimum(); //返回最小节点的指针
 	pNode search(T x); //返回元素x的指针
 	void insert(T x); //插入元素x
 	pNode successor(pNode x); //返回x的后继节点			
@@ -46,8 +48,55 @@ public:
 	int maxDepth(); //返回最大深度
 	int minDepth(); //返回最小深度
 	void levelorder(); //层次遍历
+	void preorder(pNode x); //前序遍历
+	void inorder(); //中序遍历
+	void postorder(); //后序遍历
 	*/
 	
+	void preorder(pNode x){
+		// 前序遍历
+		if (x){
+			cout << x->_key << ' ';
+			preorder(x->_l);
+			preorder(x->_r);
+		}
+	}
+
+	void inorder(pNode x){
+		// 中序遍历
+		if (x){
+			inorder(x->_l);
+			cout << x->_key << ' ';
+			inorder(x->_r);
+		}
+	}
+
+	void postorder(pNode x){
+		// 后序遍历
+		if (x){
+			postorder(x->_l);
+			postorder(x->_r);
+			cout << x->_key << ' ';
+		}
+	}
+
+	pNode maximum() {
+		pNode z = _root;
+		while (z->_r){
+			z = z->_r;
+		}
+		return z;
+	}
+
+	pNode minimum() {
+		pNode z = _root;
+		while (z->_l){
+			z = z->_l;
+		}
+		return z;
+	}
+
+
 	int maxDepth(){
 		return MaxDepth(_root);
 	}
@@ -118,15 +167,23 @@ public:
 
 	pNode successor(pNode x)
 	{	//返回x的后继节点,即x的右节点的最左节点
-		if (x->_r==NULL)
-			return NULL;
-		pNode z = x->_r;
-		pNode tmp = NULL;
-		while (z!=NULL){
-			tmp = z;
-			z = z->_l;
+		pNode rchild = x->_r; 
+		if (rchild){ //存在右子节点，那么找rchild的最左节点
+			while (rchild->_l){
+				rchild = rchild->_l;
+			}
+			return rchild;
 		}
-		return tmp;
+		else { 
+			if (x == x->_p->_l) { //x自身是左子节点，返回它的父节点
+				return x->_p;
+			}
+			else{ //x自身是右子节点，返回root，且必须满足x<=root
+				if (_root->_key>=x->_key)
+					return _root;
+				//return NULL;
+			}
+		}
 	}
 
 	void Delete(T x)
@@ -220,8 +277,13 @@ int main(){
 	B.insert(17);
 	B.insert(20);
 	B.insert(4);
-	B.levelorder();
-	cout << B.minDepth() << endl;
+	cout << B.successor(B.search(7))->_key << endl;
+	B.preorder(B._root);
+	cout << endl;
+	B.inorder(B._root);
+	cout << endl;
+	B.postorder(B._root);
+	cout << endl;
 	return 1;
 
 }
